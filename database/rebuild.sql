@@ -92,3 +92,19 @@ VALUES
 ('Mystery','Machine','1999','Scooby Doo classic.','/images/vehicles/mystery-van.jpg','/images/vehicles/mystery-van-tn.jpg',10000,128564,'Green',1),
 ('Spartan','Fire Truck','2012','Emergency response vehicle.','/images/vehicles/fire-truck.jpg','/images/vehicles/fire-truck-tn.jpg',50000,38522,'Red',4),
 ('Ford','Crown Victoria','2013','Former police car.','/images/vehicles/crwn-vic.jpg','/images/vehicles/crwn-vic-tn.jpg',10000,108247,'White',5);
+
+
+-- =========================================
+-- TASK 1 QUERY 4: Update GM Hummer description
+-- =========================================
+UPDATE inventory
+SET inv_description = REPLACE(inv_description, 'Built for offroad.', 'a huge interior with an engine to get you out of any muddy or rocky situation.')
+WHERE inv_make = 'GM' AND inv_model = 'Hummer';
+
+-- =========================================
+-- TASK 1 QUERY 6: Update inv_image and inv_thumbnail paths
+-- =========================================
+UPDATE inventory
+SET 
+    inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
+    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
