@@ -1,0 +1,9 @@
+<%- include('../partials/header') %>
+<%- nav %>
+
+<main>
+  <h1><%= title %></h1>
+  <p><%- message %></p> <!-- Unescaped para que el HTML del mensaje funcione si hay -->
+</main>
+
+<%- include('../partials/footer') %>
