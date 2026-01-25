@@ -45,7 +45,7 @@ app.use(async (err, req, res, next) => {
 
 // Servidor
 const port = process.env.PORT || 5500;
-const host = process.env.HOST || "localhost";
+const host = "0.0.0.0";
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`);
 });
