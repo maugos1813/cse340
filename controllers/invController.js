@@ -17,4 +17,35 @@ invCont.buildByClassificationId = async function (req, res, next) {
   });
 }
 
+/* ***************************
+ * Build inventory detail view
+ * ************************** */
+invCont.buildInventoryDetail = async function (req, res, next) {
+  const inv_id = req.params.inv_id;
+
+  const data = await invModel.getInventoryById(inv_id);
+  const vehicle = data[0];
+
+  if (!vehicle) {
+    throw new Error("Vehicle not found");
+  }
+
+  const vehicleHTML = await utilities.buildVehicleDetail(vehicle);
+  const nav = await utilities.getNav();
+
+  res.render("./inventory/detail", {
+    title: `${vehicle.inv_make} ${vehicle.inv_model}`,
+    nav,
+    vehicleHTML,
+  });
+};
+
+/* ***************************
+ * Intentional error trigger
+ * ************************** */
+invCont.triggerError = async function (req, res, next) {
+  throw new Error("Intentional server error for testing");
+};
+
+
 module.exports = invCont;
