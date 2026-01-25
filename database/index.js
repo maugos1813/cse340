@@ -15,6 +15,8 @@ if (process.env.NODE_ENV == "development") {
     },
 })
 
+module.exports = pool
+
 // Added for troubleshooting queries
 // during development
 module.exports = {
@@ -33,5 +35,6 @@ module.exports = {
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
   })
-  module.exports = pool
+  
 }
+
