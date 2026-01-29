@@ -1,0 +1,23 @@
+<main class="login-view">
+
+    <h1 class="login-title"><%= title %></h1>
+  
+    <%- messages() %>
+  
+    <form class="login-form" action="/account/login" method="POST">
+      <label for="email">Email:</label>
+      <input type="email" name="account_email" id="email" required>
+  
+      <label for="password">Password:</label>
+      <input type="password" name="account_password" id="password" required>
+  
+      <button type="submit" class="login-button">Login</button>
+    </form>
+  
+    <p class="login-register">
+      ¿No tienes cuenta?
+      <a href="/account/register">Registrarse</a>
+    </p>
+  
+  </main>
+  
