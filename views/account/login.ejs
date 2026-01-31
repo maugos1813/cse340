@@ -1,31 +1,47 @@
 <main class="login-view">
+  <h1 class="login-title"><%= title %></h1>
 
-    <h1 class="login-title"><%= title %></h1>
-  
-    <%- messages() %>
-  
-    <form class="login-form" action="/account/login" method="POST">
-      <!-- Email -->
-      <label for="email">Email:</label>
-      <input type="email" name="account_email" id="email" required placeholder="Enter your email">
-  
-      <!-- Password -->
-      <label for="accountPassword">Password:</label>
-      <span class="password-requirements">
-        Passwords must be at least 12 characters, with 1 uppercase letter, 1 number, and 1 special character
-      </span>
-      <input type="password" name="account_password" id="accountPassword" required
-        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
-        placeholder="Enter your password">
-  
-      <!-- Submit -->
-      <button type="submit" class="login-button">Login</button>
-    </form>
-  
-    <p class="login-register">
-      Don’t have an account yet? 
-      <a href="/account/register">Register</a>
-    </p>
-  
-  </main>
-  
+  <%- messages() %> <% if (errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+    <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+  <% } %>
+
+  <form class="login-form" action="/account/login" method="POST">
+    <!-- Email -->
+    <label for="email">Email:</label>
+    <input
+      type="email"
+      name="account_email"
+      id="email"
+      required
+      placeholder="Enter your email"
+      value="<%= locals.account_email %>"
+    />
+
+    <!-- Password -->
+    <label for="accountPassword">Password:</label>
+    <span class="password-requirements">
+      Passwords must be at least 12 characters, with 1 uppercase letter, 1
+      number, and 1 special character
+    </span>
+    <input
+      type="password"
+      name="account_password"
+      id="accountPassword"
+      required
+      pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+      placeholder="Enter your password"
+    />
+
+    <!-- Submit -->
+    <button type="submit" class="login-button">Login</button>
+  </form>
+
+  <p class="login-register">
+    Don’t have an account yet?
+    <a href="/account/register">Register</a>
+  </p>
+</main>
