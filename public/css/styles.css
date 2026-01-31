@@ -399,77 +399,131 @@ footer {
 
 /* ================= LOGIN VIEW ================= */
 
+/* Contenedor principal del login/register */
+/* Vista general */
 .login-view {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 3rem 0;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  background-color: #eaf4fb; /* celeste pastel */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Título */
 .login-title {
-  color: #ffffff;
-  margin-bottom: 1rem;
+  color: #1f2933; /* casi negro */
+  margin-bottom: 1.8rem;
+  font-size: 2rem;
+  font-weight: 600;
 }
 
+/* Formulario */
 .login-form {
-  background-color: #2f455c;
-  width: 360px;
-  padding: 2rem 2.5rem;
-  border-radius: 12px;
-  border: 2px solid #d2b48c;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  padding: 2.5rem 2rem;
+  border-radius: 14px;
+  border: 2px solid #1f2933; /* negro suave */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
 }
 
+/* Labels */
 .login-form label {
-  display: block;
-  margin-bottom: 0.4rem;
-  color: #ffffff;
-  font-weight: bold;
+  color: #1f2933;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
+/* Inputs */
 .login-form input {
   width: 100%;
-  padding: 0.6rem 0.7rem;
-  margin-bottom: 1.1rem;
+  padding: 0.7rem 0.9rem;
   border-radius: 6px;
-  border: none;
+  border: 1px solid #9aa5b1; /* gris */
+  background-color: #f9fafb;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.login-form input:focus {
+  outline: none;
+  border-color: #5aa7d9; /* celeste más fuerte */
+  box-shadow: 0 0 0 2px rgba(90, 167, 217, 0.25);
+}
+
+/* Botón */
 .login-button {
-  width: 100%;
-  padding: 0.6rem;
+  margin-top: 0.8rem;
+  padding: 0.75rem;
   border-radius: 999px;
   border: none;
-  background-color: #ffffff;
-  color: #2f455c;
-  font-weight: bold;
+  background-color: #5aa7d9;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .login-button:hover {
-  background-color: #e6e6e6;
+  background-color: #4696c9;
   transform: translateY(-1px);
 }
 
+/* Texto inferior */
 .login-register {
-  margin-top: 1rem;
-  color: #ffffff;
+  margin-top: 1.4rem;
+  color: #1f2933;
   font-size: 0.9rem;
+  text-align: center;
 }
 
 .login-register a {
-  color: #ffffff;
-  font-weight: bold;
-  text-decoration: underline;
+  color: #5aa7d9;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .login-register a:hover {
-  color: #ffd699;
+  text-decoration: underline;
 }
 
-/* Flash messages (solo login) */
+/* Requisitos de contraseña */
+.password-requirements {
+  font-size: 0.8rem;
+  color: #4b5563; /* gris oscuro */
+  margin-top: -6px;
+  margin-bottom: 8px;
+}
+
+/* Flash messages */
 .login-view ul.messages {
-  width: 360px;
+  width: 100%;
+  max-width: 380px;
   margin-bottom: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  list-style: none;
+  background-color: #f1f5f9; /* gris claro */
+  color: #1f2933;
+  border: 1px solid #9aa5b1;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 420px) {
+  .login-form {
+    padding: 1.8rem 1.3rem;
+  }
+
+  .login-title {
+    font-size: 1.7rem;
+  }
 }

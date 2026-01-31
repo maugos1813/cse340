@@ -5,18 +5,26 @@
     <%- messages() %>
   
     <form class="login-form" action="/account/login" method="POST">
+      <!-- Email -->
       <label for="email">Email:</label>
-      <input type="email" name="account_email" id="email" required>
+      <input type="email" name="account_email" id="email" required placeholder="Enter your email">
   
-      <label for="password">Password:</label>
-      <input type="password" name="account_password" id="password" required>
+      <!-- Password -->
+      <label for="accountPassword">Password:</label>
+      <span class="password-requirements">
+        Passwords must be at least 12 characters, with 1 uppercase letter, 1 number, and 1 special character
+      </span>
+      <input type="password" name="account_password" id="accountPassword" required
+        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+        placeholder="Enter your password">
   
+      <!-- Submit -->
       <button type="submit" class="login-button">Login</button>
     </form>
   
     <p class="login-register">
-      ¿No tienes cuenta?
-      <a href="/account/register">Registrarse</a>
+      Don’t have an account yet? 
+      <a href="/account/register">Register</a>
     </p>
   
   </main>

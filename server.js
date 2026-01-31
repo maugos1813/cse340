@@ -37,6 +37,10 @@ app.use(function(req, res, next){
  * ************************/
 // Servir toda la carpeta public
 app.use(express.static("public"));
+// Middleware para parsear datos del body
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // Middleware estático propio
 app.use(static);

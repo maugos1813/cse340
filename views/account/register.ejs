@@ -1,0 +1,48 @@
+<main class="login-view">
+
+    <h1 class="login-title"><%= title %></h1>
+  
+    <%- messages() %>
+
+    <% if (errors) { %>
+        <ul class="notice">
+          <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+      
+  
+    <form class="login-form" action="/account/register" method="POST">
+      <!-- First Name -->
+      <label for="firstname">First Name:</label>
+      <input type="text" name="account_firstname" id="firstname" required placeholder="Enter your first name">
+  
+      <!-- Last Name -->
+      <label for="lastname">Last Name:</label>
+      <input type="text" name="account_lastname" id="lastname" required placeholder="Enter your last name">
+  
+      <!-- Email -->
+      <label for="email">Email:</label>
+      <input type="email" name="account_email" id="email" required placeholder="Enter a valid email address">
+  
+      <!-- Password -->
+      <label for="accountPassword">Password:</label>
+      <span class="password-requirements">
+        Passwords must be at least 12 characters, with 1 uppercase letter, 1 number, and 1 special character
+      </span>
+      <input type="password" name="account_password" id="accountPassword" required
+        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+        placeholder="Enter a secure password">
+  
+      <!-- Submit -->
+      <button type="submit" class="login-button">Register</button>
+    </form>
+  
+    <p class="login-register">
+      ¿Ya tienes cuenta?
+      <a href="/account/login">Iniciar sesión</a>
+    </p>
+  
+  </main>
+  
