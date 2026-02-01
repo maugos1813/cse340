@@ -1,0 +1,67 @@
+<!-- <%- include('../partials/header', { title: title }) %> -->
+
+<h1>Add Inventory</h1>
+
+<%- include('../partials/messages') %>
+
+<form action="/inv/add-inventory" method="POST" novalidate>
+  
+  <!-- Make -->
+  <label for="invMake">Make</label>
+  <input
+    type="text"
+    name="inv_make"
+    id="invMake"
+    required
+    value="<%= typeof inv_make !== 'undefined' ? inv_make : '' %>"
+  >
+
+  <!-- Model -->
+  <label for="invModel">Model</label>
+  <input
+    type="text"
+    name="inv_model"
+    id="invModel"
+    required
+    value="<%= typeof inv_model !== 'undefined' ? inv_model : '' %>"
+  >
+
+  <!-- Classification -->
+  <label for="classificationList">Classification</label>
+  <%- classificationSelect %>
+
+  <!-- Price -->
+  <label for="invPrice">Price</label>
+  <input
+    type="number"
+    step="0.01"
+    name="inv_price"
+    id="invPrice"
+    required
+    value="<%= typeof inv_price !== 'undefined' ? inv_price : '' %>"
+  >
+
+  <!-- Image Path -->
+  <label for="invImage">Image Path</label>
+  <input
+    type="text"
+    name="inv_image"
+    id="invImage"
+    required
+    value="<%= typeof inv_image !== 'undefined' ? inv_image : '/images/vehicles/no-image.png' %>"
+  >
+
+  <!-- Thumbnail Path -->
+  <label for="invThumbnail">Thumbnail</label>
+  <input
+    type="text"
+    name="inv_thumbnail"
+    id="invThumbnail"
+    required
+    value="<%= typeof inv_thumbnail !== 'undefined' ? inv_thumbnail : '/images/vehicles/no-image-tn.png' %>"
+  >
+
+  <button type="submit">Add Vehicle</button>
+</form>
+
+<!-- <%- include('../partials/footer') %> -->

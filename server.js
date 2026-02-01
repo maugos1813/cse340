@@ -1,91 +1,98 @@
-const express = require("express");
-const expressLayouts = require("express-ejs-layouts");
-const dotenv = require("dotenv").config();
-const inventoryRoute = require("./routes/inventoryRoute");
-const baseController = require("./controllers/baseController");
-const static = require("./routes/static");
-const utilities = require("./utilities");
-const session = require("express-session");
-const pool = require("./database/");
-const accountRoute = require("./routes/accountRoute");
+const express = require("express")
+const expressLayouts = require("express-ejs-layouts")
+const dotenv = require("dotenv").config()
+const session = require("express-session")
+const flash = require("connect-flash")
+const pgSession = require("connect-pg-simple")(session)
 
-const app = express();
+const pool = require("./database/")
+const utilities = require("./utilities")
 
-/* ***********************
- * Middleware de sesión y flash
- * ************************/
-app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
-    pool,
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: 'sessionId',
-}));
+const inventoryRoute = require("./routes/inventoryRoute")
+const accountRoute = require("./routes/accountRoute")
+const staticRoute = require("./routes/static")
+const baseController = require("./controllers/baseController")
 
-// Express Messages Middleware
-app.use(require('connect-flash')());
-app.use(function(req, res, next){
-  res.locals.messages = require('express-messages')(req, res);
-  next();
-});
+const app = express()
 
-/* ***********************
- * Middleware de Express
- * ************************/
-// Servir toda la carpeta public
-app.use(express.static("public"));
-// Middleware para parsear datos del body
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+/* *****************************
+ * Session & Flash Middleware
+ * ***************************** */
+app.use(
+  session({
+    store: new pgSession({
+      pool,
+      createTableIfMissing: true,
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    name: "sessionId",
+  })
+)
 
+app.use(flash())
 
-// Middleware estático propio
-app.use(static);
+// Express-messages middleware (REQUIRED for CSE 340)
+app.use((req, res, next) => {
+  res.locals.messages = require("express-messages")(req, res)
+  next()
+})
 
-// Configuración de EJS
-app.set("view engine", "ejs");
-app.use(expressLayouts);
-app.set("layout", "./layouts/layout");
+/* *****************************
+ * Express Middleware
+ * ***************************** */
+app.use(express.static("public"))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-/* ***********************
- * Rutas
- * ************************/
-// Ruta principal
-app.get("/", utilities.handleErrors(baseController.buildHome));
+/* *****************************
+ * View Engine
+ * ***************************** */
+app.set("view engine", "ejs")
+app.use(expressLayouts)
+app.set("layout", "./layouts/layout")
 
-// Rutas de inventario
-app.use("/inv", inventoryRoute);
+/* *****************************
+ * Routes
+ * ***************************** */
+app.use(staticRoute)
 
-// Rutas de cuenta
-app.use("/account", accountRoute);
+app.get("/", utilities.handleErrors(baseController.buildHome))
 
-/* ***********************
- * Manejo de errores
- * ************************/
-// Middleware 404 - para rutas no encontradas
-app.use(async (req, res, next) => {
-  next({ status: 404, message: "Sorry, we appear to have lost that page." });
-});
+app.use("/inv", inventoryRoute)
+app.use("/account", accountRoute)
 
-// Express Error Handler - debe ir después de todo lo demás
+/* *****************************
+ * 404 Handler
+ * ***************************** */
+app.use((req, res, next) => {
+  next({
+    status: 404,
+    message: "Sorry, we appear to have lost that page.",
+  })
+})
+
+/* *****************************
+ * Error Handler
+ * ***************************** */
 app.use(async (err, req, res, next) => {
-  let nav = await utilities.getNav();
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`);
+  const nav = await utilities.getNav()
+  console.error(`Error at "${req.originalUrl}": ${err.message}`)
+
   res.status(err.status || 500).render("errors/error", {
     title: err.status || "Server Error",
     message: err.message,
     nav,
-  });
-});
+  })
+})
 
-/* ***********************
- * Servidor
- * ************************/
-const port = process.env.PORT || 5500;
-const host = "0.0.0.0";
+/* *****************************
+ * Server
+ * ***************************** */
+const port = process.env.PORT || 5500
+const host = "0.0.0.0"
+
 app.listen(port, () => {
-  console.log(`App listening on ${host}:${port}`);
-});
+  console.log(`App listening on ${host}:${port}`)
+})
