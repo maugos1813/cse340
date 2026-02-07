@@ -4,13 +4,14 @@ const utilities = require("../utilities")
 const accountController = require("../controllers/accountController")
 const regValidate = require("../utilities/account-validation")
 
-// GET - mostrar formulario de registro
+/* ****************************************
+ * REGISTER
+ **************************************** */
 router.get(
   "/register",
   utilities.handleErrors(accountController.showRegisterForm)
 )
 
-// POST - procesar registro (CON validación)
 router.post(
   "/register",
   regValidate.registrationRules(),
@@ -18,21 +19,38 @@ router.post(
   utilities.handleErrors(accountController.registerAccount)
 )
 
-// GET - mostrar formulario de login
+/* ****************************************
+ * LOGIN
+ **************************************** */
 router.get(
   "/login",
   utilities.handleErrors(accountController.buildLogin)
 )
 
-// Process the login attempt
 router.post(
-    "/login",
-    regValidate.loginRules(),
-    regValidate.checkLoginData,
-    (req, res) => {
-      res.status(200).send("login process")
-    }
-  )
-  
-  
+  "/login",
+  regValidate.loginRules(),
+  regValidate.checkLoginData,
+  utilities.handleErrors(accountController.accountLogin)
+)
+
+/* ****************************************
+ * ACCOUNT DASHBOARD (PROTECTED)
+ **************************************** */
+router.get(
+  "/",
+  utilities.checkLogin, // Middleware asegura que el usuario esté logueado
+  utilities.handleErrors(accountController.buildAccount)
+)
+
+/* ****************************************
+ * LOGOUT
+ **************************************** */
+router.get("/logout", (req, res) => {
+  res.clearCookie("jwt")       // Borra JWT
+  req.session.destroy()        // Destruye sesión
+  req.flash("notice", "You have successfully logged out.")
+  res.redirect("/")            // Redirige al home
+})
+
 module.exports = router

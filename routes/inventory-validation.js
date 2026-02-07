@@ -16,9 +16,9 @@ exports.inventoryValidationRules = () => {
       .notEmpty()
       .withMessage("Model is required."),
 
-    body("inv_year")
-      .isInt({ min: 1900, max: 2099 })
-      .withMessage("Year must be a valid number."),
+    // body("inv_year")
+    //   .isInt({ min: 1900, max: 2099 })
+    //   .withMessage("Year must be a valid number."),
 
     body("inv_description")
       .trim()
@@ -66,3 +66,24 @@ exports.checkInventoryData = async (req, res, next) => {
   }
   next()
 }
+
+exports.checkUpdateData = async (req, res, next) => {
+    console.log("Body received:", req.body)
+    const errors = validationResult(req)
+    console.log("Validation errors:", errors.array())
+    
+    if (!errors.isEmpty()) {
+      const nav = await utilities.getNav()
+      const classificationSelect = await utilities.buildClassificationList(req.body.classification_id)
+      req.flash("notice", errors.array()[0].msg)
+      return res.status(400).render("inventory/edit-inventory", {
+        title: `Edit ${req.body.inv_make} ${req.body.inv_model}`,
+        nav,
+        classificationSelect,
+        errors: errors.array(),
+        ...req.body
+      })
+    }
+    next()
+  }
+  

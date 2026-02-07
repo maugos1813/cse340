@@ -4,6 +4,7 @@ const dotenv = require("dotenv").config()
 const session = require("express-session")
 const flash = require("connect-flash")
 const pgSession = require("connect-pg-simple")(session)
+const cookieParser = require("cookie-parser")
 
 const pool = require("./database/")
 const utilities = require("./utilities")
@@ -14,6 +15,17 @@ const staticRoute = require("./routes/static")
 const baseController = require("./controllers/baseController")
 
 const app = express()
+
+/* *****************************
+ * BODY PARSERS (DEBEN IR PRIMERO)
+ * ***************************** */
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+
+/* *****************************
+ * Static Files
+ * ***************************** */
+app.use(express.static("public"))
 
 /* *****************************
  * Session & Flash Middleware
@@ -31,20 +43,14 @@ app.use(
   })
 )
 
+app.use(cookieParser())
 app.use(flash())
 
-// Express-messages middleware (REQUIRED for CSE 340)
+// Express-messages (REQUIRED for CSE 340)
 app.use((req, res, next) => {
   res.locals.messages = require("express-messages")(req, res)
   next()
 })
-
-/* *****************************
- * Express Middleware
- * ***************************** */
-app.use(express.static("public"))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 
 /* *****************************
  * View Engine
@@ -54,14 +60,23 @@ app.use(expressLayouts)
 app.set("layout", "./layouts/layout")
 
 /* *****************************
- * Routes
+ * JWT Middleware
+ * Must run BEFORE protected routes
  * ***************************** */
-app.use(staticRoute)
+app.use(utilities.checkJWTToken)
 
+/* *****************************
+ * PUBLIC ROUTES (NO LOGIN REQUIRED)
+ * ***************************** */
+app.use(staticRoute) // static pages
+app.use("/account", accountRoute) // login/register/logout
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
+/* *****************************
+ * INVENTORY ROUTES
+ * Some routes protected inside inventoryRoute
+ * ***************************** */
 app.use("/inv", inventoryRoute)
-app.use("/account", accountRoute)
 
 /* *****************************
  * 404 Handler
