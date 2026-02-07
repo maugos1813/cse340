@@ -1,0 +1,98 @@
+<!-- <%- include('../partials/header') %> -->
+
+<main>
+  <h1><%= title %></h1>
+
+  <!-- Flash message -->
+  <%- include('../partials/messages') %>
+
+  <!-- Validation errors -->
+  <%- include('../partials/errors') %>
+
+  <!-- ===================== -->
+  <!-- ACCOUNT UPDATE FORM -->
+  <!-- ===================== -->
+  <section>
+    <h2>Update Account Information</h2>
+
+    <form action="/account/update" method="post" novalidate>
+      
+      <!-- First Name -->
+      <label for="account_firstname">First Name</label>
+      <input
+        type="text"
+        id="account_firstname"
+        name="account_firstname"
+        required
+        value="<%= locals.account_firstname || accountData.account_firstname %>"
+      >
+
+      <!-- Last Name -->
+      <label for="account_lastname">Last Name</label>
+      <input
+        type="text"
+        id="account_lastname"
+        name="account_lastname"
+        required
+        value="<%= locals.account_lastname || accountData.account_lastname %>"
+      >
+
+      <!-- Email -->
+      <label for="account_email">Email Address</label>
+      <input
+        type="email"
+        id="account_email"
+        name="account_email"
+        required
+        value="<%= locals.account_email || accountData.account_email %>"
+      >
+
+      <!-- Account ID -->
+      <input
+        type="hidden"
+        name="account_id"
+        value="<%= accountData.account_id %>"
+      >
+
+      <button type="submit">Update Account</button>
+    </form>
+  </section>
+
+  <!-- ===================== -->
+  <!-- PASSWORD CHANGE FORM -->
+  <!-- ===================== -->
+  <section>
+    <h2>Change Password</h2>
+
+    <p>
+      Enter a new password below to change your current password.
+      Passwords must be at least 12 characters long and contain
+      at least one number and one special character.
+    </p>
+
+    <form action="/account/update-password" method="post" novalidate>
+
+      <!-- Password -->
+      <label for="account_password">New Password</label>
+      <input
+        type="password"
+        id="account_password"
+        name="account_password"
+        required
+        pattern="(?=.*\d)(?=.*[!@#$%^&*]).{12,}"
+        title="Password must be at least 12 characters and include a number and special character."
+      >
+
+      <!-- Account ID -->
+      <input
+        type="hidden"
+        name="account_id"
+        value="<%= accountData.account_id %>"
+      >
+
+      <button type="submit">Change Password</button>
+    </form>
+  </section>
+</main>
+
+<!-- <%- include('../partials/footer') %> -->

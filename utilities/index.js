@@ -129,22 +129,23 @@ Util.buildClassificationList = async function (classification_id = null) {
 
 /* ****************************************
  * JWT Middleware
- * Only verifies token if present
+ * Verifica token si está presente (async)
  **************************************** */
-Util.checkJWTToken = (req, res, next) => {
-  if (req.cookies.jwt) {
-    jwt.verify(req.cookies.jwt, process.env.ACCESS_TOKEN_SECRET, (err, accountData) => {
-      if (err) {
-        // Invalid token: clear cookie but continue
-        res.clearCookie("jwt")
-        res.locals.loggedin = 0
-        return next()
-      }
-      res.locals.accountData = accountData
-      res.locals.loggedin = 1
-      next()
-    })
-  } else {
+Util.checkJWTToken = async (req, res, next) => {
+  try {
+    const token = req.cookies.jwt
+    if (!token) {
+      res.locals.loggedin = 0
+      return next()
+    }
+
+    const accountData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+    res.locals.accountData = accountData
+    res.locals.loggedin = 1
+    next()
+  } catch (err) {
+    // Token inválido o expirado
+    res.clearCookie("jwt")
     res.locals.loggedin = 0
     next()
   }
@@ -152,7 +153,7 @@ Util.checkJWTToken = (req, res, next) => {
 
 /* ****************************************
  * Route Protection Middleware
- * Use this only for routes that require login
+ * Para rutas que requieren login
  **************************************** */
 Util.checkLogin = (req, res, next) => {
   if (res.locals.loggedin) {
@@ -161,6 +162,21 @@ Util.checkLogin = (req, res, next) => {
     req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
+}
+
+/* ****************************************
+ * Admin / Employee Middleware
+ * Solo permite Employee o Admin
+ **************************************** */
+Util.checkAdminOrEmployee = (req, res, next) => {
+  if (res.locals.loggedin) {
+    const { account_type } = res.locals.accountData
+    if (account_type === "Employee" || account_type === "Admin") {
+      return next()
+    }
+  }
+  req.flash("notice", "You do not have permission to access that page.")
+  return res.redirect("/account/login")
 }
 
 module.exports = Util

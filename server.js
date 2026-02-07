@@ -65,10 +65,18 @@ app.set("layout", "./layouts/layout")
  * ***************************** */
 app.use(utilities.checkJWTToken)
 
+// Ensure accountData always exists for views
+app.use((req, res, next) => {
+  if (!res.locals.accountData) {
+    res.locals.accountData = {}
+  }
+  next()
+})
+
 /* *****************************
  * PUBLIC ROUTES (NO LOGIN REQUIRED)
  * ***************************** */
-app.use(staticRoute) // static pages
+app.use(staticRoute)             // static pages
 app.use("/account", accountRoute) // login/register/logout
 app.get("/", utilities.handleErrors(baseController.buildHome))
 

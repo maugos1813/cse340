@@ -13,9 +13,6 @@ const {
   checkUpdateData,
 } = require("../utilities/inventory-validation")
 
-// 🔹 Only protected routes use this middleware
-const { checkLogin } = require("../utilities")
-
 /* ******************************
  * Public Routes (no login required)
  * ***************************** */
@@ -32,7 +29,7 @@ router.get(
   utilities.handleErrors(invController.buildInventoryDetail)
 )
 
-// Inventory list / management (public view, change if you want protected)
+// Inventory list / management (public view)
 router.get(
   "/",
   utilities.handleErrors(invController.buildManagement)
@@ -45,20 +42,20 @@ router.get(
 )
 
 /* ******************************
- * Protected Routes (require login)
+ * Protected Routes (Employee/Admin only)
  * ***************************** */
 
 // Add classification view
 router.get(
   "/add-classification",
-  checkLogin,
+  utilities.checkAdminOrEmployee,
   utilities.handleErrors(invController.buildAddClassification)
 )
 
 // Process add classification
 router.post(
   "/add-classification",
-  checkLogin,
+  utilities.checkAdminOrEmployee,
   classificationValidationRules(),
   checkClassificationData,
   utilities.handleErrors(invController.addClassification)
@@ -67,48 +64,53 @@ router.post(
 // Add inventory view
 router.get(
   "/add-inventory",
-  checkLogin,
+  utilities.checkAdminOrEmployee,
   utilities.handleErrors(invController.buildAddInventory)
 )
 
+// Process add inventory
 router.post(
   "/add-inventory",
-  checkLogin,
+  utilities.checkAdminOrEmployee,
   inventoryValidationRules(),
   checkInventoryData,
   utilities.handleErrors(invController.addInventory)
 )
 
-// Build edit inventory view
+// Edit inventory view
 router.get(
   "/edit/:inv_id",
-  checkLogin,
+  utilities.checkAdminOrEmployee,
   utilities.handleErrors(invController.editInventoryView)
 )
 
-// Route to process inventory update
+// Process inventory update
 router.post(
   "/update",
-  checkLogin,
+  utilities.checkAdminOrEmployee,
   inventoryValidationRules(),
   checkUpdateData,
   utilities.handleErrors(invController.updateInventory)
 )
 
-// Route to trigger intentional error (Task 3)
-router.get(
-  "/trigger-error",
-  utilities.handleErrors(invController.triggerError)
-)
-
+// Delete confirmation view
 router.get(
   "/delete/:inv_id",
+  utilities.checkAdminOrEmployee,
   utilities.handleErrors(invController.buildDeleteConfirmation)
 )
 
+// Process inventory deletion
 router.post(
   "/delete",
+  utilities.checkAdminOrEmployee,
   utilities.handleErrors(invController.deleteInventoryItem)
+)
+
+// Route to trigger intentional error (for testing)
+router.get(
+  "/trigger-error",
+  utilities.handleErrors(invController.triggerError)
 )
 
 module.exports = router

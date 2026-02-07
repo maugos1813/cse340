@@ -1,0 +1,10 @@
+<% if (errors && !errors.isEmpty()) { %>
+    <div class="error-messages">
+      <ul>
+        <% errors.array().forEach((err) => { %>
+          <li><%= err.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+  

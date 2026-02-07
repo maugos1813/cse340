@@ -4,7 +4,9 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
-// Mostrar login
+/* ****************************************
+ * LOGIN
+ **************************************** */
 async function buildLogin(req, res, next) {
   try {
     const nav = await utilities.getNav()
@@ -20,7 +22,6 @@ async function buildLogin(req, res, next) {
   }
 }
 
-// Procesar login
 async function accountLogin(req, res, next) {
   try {
     const { account_email, account_password } = req.body
@@ -43,7 +44,7 @@ async function accountLogin(req, res, next) {
         expiresIn: 3600,
       })
       res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
-      return res.redirect("/") // Aquí rediriges al home
+      return res.redirect("/account") // Redirige al panel de cuenta
     } else {
       req.flash("notice", "Please check your credentials and try again.")
       return res.status(400).render("account/login", {
@@ -58,7 +59,9 @@ async function accountLogin(req, res, next) {
   }
 }
 
-// Mostrar registro
+/* ****************************************
+ * REGISTER
+ **************************************** */
 async function showRegisterForm(req, res, next) {
   try {
     const nav = await utilities.getNav()
@@ -76,7 +79,6 @@ async function showRegisterForm(req, res, next) {
   }
 }
 
-// Procesar registro
 async function registerAccount(req, res, next) {
   try {
     const { account_firstname, account_lastname, account_email, account_password } = req.body
@@ -109,12 +111,14 @@ async function registerAccount(req, res, next) {
   }
 }
 
-// Mostrar panel de cuenta
+/* ****************************************
+ * ACCOUNT DASHBOARD / MANAGEMENT VIEW
+ **************************************** */
 async function buildAccount(req, res, next) {
   try {
     const nav = await utilities.getNav()
-    res.render("account/index", {
-      title: "Account",
+    res.render("account/management", { // Ahora apunta al management.ejs
+      title: "Account Management",
       nav,
       notice: req.flash("notice"),
       errors: null,
@@ -125,10 +129,158 @@ async function buildAccount(req, res, next) {
   }
 }
 
+/* ****************************************
+ * BUILD UPDATE VIEW
+ **************************************** */
+async function buildUpdate(req, res, next) {
+  try {
+    const nav = await utilities.getNav()
+    const account_id = req.params.account_id
+    const accountData = await accountModel.getAccountById(account_id)
+
+    if (!accountData) {
+      req.flash("notice", "Account not found.")
+      return res.redirect("/account")
+    }
+
+    res.render("account/update", {
+      title: "Update Account Information",
+      nav,
+      notice: req.flash("notice"),
+      errors: null,
+      accountData,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/* ****************************************
+ * PROCESS ACCOUNT UPDATE
+ **************************************** */
+async function updateAccount(req, res, next) {
+  try {
+    const { account_id, account_firstname, account_lastname, account_email } = req.body
+    const nav = await utilities.getNav()
+
+    const updateResult = await accountModel.updateAccount(
+      account_id,
+      account_firstname,
+      account_lastname,
+      account_email
+    )
+
+    if (!updateResult) {
+      req.flash("notice", "Failed to update account information.")
+      const accountData = await accountModel.getAccountById(account_id)
+      return res.render("account/update", {
+        title: "Update Account Information",
+        nav,
+        notice: req.flash("notice"),
+        errors: null,
+        accountData,
+      })
+    }
+
+    req.flash("notice", "Account information updated successfully.")
+    const accountData = await accountModel.getAccountById(account_id)
+    res.render("account/management", {
+      title: "Account Management",
+      nav,
+      notice: req.flash("notice"),
+      errors: null,
+      accountData,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/* ****************************************
+ * PROCESS PASSWORD CHANGE
+ **************************************** */
+async function updatePassword(req, res, next) {
+  try {
+    const { account_id, account_password } = req.body
+    const nav = await utilities.getNav()
+
+    if (!account_password) {
+      req.flash("notice", "Password cannot be empty.")
+      const accountData = await accountModel.getAccountById(account_id)
+      return res.render("account/update", {
+        title: "Update Account Information",
+        nav,
+        notice: req.flash("notice"),
+        errors: null,
+        accountData,
+      })
+    }
+
+    const hashedPassword = await bcrypt.hash(account_password, 10)
+    const result = await accountModel.updatePassword(account_id, hashedPassword)
+
+    if (!result) {
+      req.flash("notice", "Failed to update password.")
+      const accountData = await accountModel.getAccountById(account_id)
+      return res.render("account/update", {
+        title: "Update Account Information",
+        nav,
+        notice: req.flash("notice"),
+        errors: null,
+        accountData,
+      })
+    }
+
+    req.flash("notice", "Password updated successfully.")
+    const accountData = await accountModel.getAccountById(account_id)
+    res.render("account/management", {
+      title: "Account Management",
+      nav,
+      notice: req.flash("notice"),
+      errors: null,
+      accountData,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/* ****************************************
+ * LOGOUT
+ **************************************** */
+async function logout(req, res, next) {
+  try {
+    // Limpiamos la cookie JWT
+    res.clearCookie("jwt")
+
+    // Destruye la sesión si existe, pero no detiene el logout si no hay sesión
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err)
+        }
+        // Redirige al login
+        res.redirect("/account/login")
+      })
+    } else {
+      // Si no hay sesión, simplemente redirige
+      res.redirect("/account/login")
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
 module.exports = {
   buildLogin,
   accountLogin,
   showRegisterForm,
   registerAccount,
   buildAccount,
+  buildUpdate,
+  updateAccount,
+  updatePassword,
+  logout,
 }

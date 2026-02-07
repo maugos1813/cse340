@@ -16,28 +16,28 @@ const inventoryValidationRules = () => {
       .notEmpty()
       .withMessage("Model is required."),
 
-    // body("inv_year")
-    //   .isInt({ min: 1900, max: 2099 })
-    //   .withMessage("Year must be a valid number."),
+    body("inv_year")
+      .isInt({ min: 1900, max: 2099 })
+      .withMessage("Year must be a valid number."),
 
-    // body("inv_description")
-    //   .trim()
-    //   .notEmpty()
-    //   .withMessage("Description is required."),
+    body("inv_description")
+      .trim()
+      .notEmpty()
+      .withMessage("Description is required."),
 
     body("inv_price")
       .isFloat({ min: 0 })
       .withMessage("Price must be a valid number.")
       .toFloat(),
 
-    // body("inv_miles")
-    //   .isInt({ min: 0 })
-    //   .withMessage("Miles must be a valid number."),
+    body("inv_miles")
+      .isInt({ min: 0 })
+      .withMessage("Miles must be a valid number."),
 
-    // body("inv_color")
-    //   .trim()
-    //   .notEmpty()
-    //   .withMessage("Color is required."),
+    body("inv_color")
+      .trim()
+      .notEmpty()
+      .withMessage("Color is required."),
 
     body("classification_id")
       .isInt()

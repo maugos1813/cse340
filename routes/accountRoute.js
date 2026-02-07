@@ -39,18 +39,47 @@ router.post(
  **************************************** */
 router.get(
   "/",
-  utilities.checkLogin, // Middleware asegura que el usuario esté logueado
+  utilities.checkLogin, // middleware JWT
   utilities.handleErrors(accountController.buildAccount)
+)
+
+/* ****************************************
+ * UPDATE ACCOUNT (VIEW)
+ **************************************** */
+router.get(
+  "/update/:account_id",
+  utilities.checkLogin, // middleware JWT
+  utilities.handleErrors(accountController.buildUpdate)
+)
+
+/* ****************************************
+ * UPDATE ACCOUNT (PROCESS)
+ **************************************** */
+router.post(
+  "/update",
+  utilities.checkLogin, // middleware JWT
+  regValidate.updateRules ? regValidate.updateRules() : [], // por si no existe, evitar crash
+  regValidate.checkUpdateData ? regValidate.checkUpdateData : (req,res,next)=>next(),
+  utilities.handleErrors(accountController.updateAccount)
+)
+
+/* ****************************************
+ * UPDATE PASSWORD (PROCESS)
+ **************************************** */
+router.post(
+  "/update-password",
+  utilities.checkLogin, // middleware JWT
+  regValidate.passwordRules ? regValidate.passwordRules() : [],
+  regValidate.checkPassword ? regValidate.checkPassword : (req,res,next)=>next(),
+  utilities.handleErrors(accountController.updatePassword)
 )
 
 /* ****************************************
  * LOGOUT
  **************************************** */
-router.get("/logout", (req, res) => {
-  res.clearCookie("jwt")       // Borra JWT
-  req.session.destroy()        // Destruye sesión
-  req.flash("notice", "You have successfully logged out.")
-  res.redirect("/")            // Redirige al home
-})
+router.get(
+  "/logout",
+  utilities.handleErrors(accountController.logout)
+)
 
 module.exports = router
