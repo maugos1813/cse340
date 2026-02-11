@@ -1,9 +1,25 @@
 <!-- <%- include('../partials/header') %> -->
 
-
 <main>
   <h1><%= title %></h1>
+
   <%- vehicleHTML %>
+
+  <% if (loggedin) { %>
+    <% if (isFavorite) { %>
+      <form action="/favorites/remove" method="POST" style="margin-top:1em;">
+        <input type="hidden" name="inv_id" value="<%= inv_id %>">
+        <button type="submit" class="btn btn-danger">Remove from Favorites</button>
+      </form>
+    <% } else { %>
+      <form action="/favorites/add" method="POST" style="margin-top:1em;">
+        <input type="hidden" name="inv_id" value="<%= inv_id %>">
+        <button type="submit" class="btn btn-primary">Add to Favorites</button>
+      </form>
+    <% } %>
+  <% } else { %>
+    <p><a href="/account/login">Log in</a> to add this vehicle to your favorites.</p>
+  <% } %>
 </main>
 
 <!-- <%- include('../partials/footer') %> -->

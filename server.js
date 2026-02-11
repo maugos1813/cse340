@@ -14,6 +14,8 @@ const accountRoute = require("./routes/accountRoute")
 const staticRoute = require("./routes/static")
 const baseController = require("./controllers/baseController")
 
+const favoriteRoute = require("./routes/favoriteRoute")
+
 const app = express()
 
 /* *****************************
@@ -86,6 +88,9 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
  * ***************************** */
 app.use("/inv", inventoryRoute)
 
+app.use("/favorites", favoriteRoute)
+
+
 /* *****************************
  * 404 Handler
  * ***************************** */
@@ -109,6 +114,7 @@ app.use(async (err, req, res, next) => {
     nav,
   })
 })
+
 
 /* *****************************
  * Server

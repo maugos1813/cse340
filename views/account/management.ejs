@@ -1,30 +1,36 @@
 <!-- <%- include('../partials/header') %> -->
 
 <main>
-  <h1>Account Management</h1>
-
-  <!-- Flash messages -->
-  <%- include('../partials/messages') %>
-
-  <!-- Greeting (all logged-in users) -->
-  <h2>Welcome <%= accountData.account_firstname %></h2>
-
-  <!-- Update account information link (ALL users) -->
-  <p>
-    <a href="/account/update/<%= accountData.account_id %>">
-      Update Account Information
-    </a>
-  </p>
-
-  <!-- Inventory Management (ONLY Employee or Admin) -->
-  <% if (accountData.account_type === "Employee" || accountData.account_type === "Admin") { %>
-    <section class="inventory-management">
-      <h3>Inventory Management</h3>
-      <p>
-        <a href="/inv/">Manage Inventory</a>
-      </p>
-    </section>
-  <% } %>
-</main>
-
-<!-- <%- include('../partials/footer') %> -->
+    <h1>Account Management</h1>
+  
+    <!-- Flash messages -->
+    <%- include('../partials/messages') %>
+  
+    <!-- Greeting (all logged-in users) -->
+    <h2>Welcome <%= accountData.account_firstname %></h2>
+  
+    <!-- Update account information link (ALL users) -->
+    <p>
+      <a href="/account/update/<%= accountData.account_id %>">
+        Update Account Information
+      </a>
+    </p>
+  
+    <!-- Favorites link (ALL logged-in users) -->
+    <p>
+      <a href="/favorites">View My Favorites</a>
+    </p>
+  
+    <!-- Inventory Management (ONLY Employee or Admin) -->
+    <% if (accountData.account_type === "Employee" || accountData.account_type === "Admin") { %>
+      <section class="inventory-management">
+        <h3>Inventory Management</h3>
+        <p>
+          <a href="/inv/">Manage Inventory</a>
+        </p>
+      </section>
+    <% } %>
+  </main>
+  
+  <!-- <%- include('../partials/footer') %> -->
+  
