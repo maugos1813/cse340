@@ -1,6 +1,8 @@
 const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/")
 const favoriteModel = require("../models/favorite-model") // <-- agregado
+const reviewModel = require("../models/review-model")
+
 
 const invCont = {}
 
@@ -58,6 +60,11 @@ invCont.buildInventoryDetail = async function (req, res, next) {
       isFavorite = check.rowCount > 0
     }
 
+    // -------------------------------
+    // REVIEWS LOGIC (NEW)
+    // -------------------------------
+    const reviews = await reviewModel.getReviewsByVehicle(inv_id)
+
     res.render("./inventory/detail", {
       title: `${vehicle.inv_make} ${vehicle.inv_model}`,
       nav,
@@ -65,11 +72,13 @@ invCont.buildInventoryDetail = async function (req, res, next) {
       inv_id,
       loggedin,
       isFavorite,
+      reviews // ← MUY IMPORTANTE
     })
   } catch (error) {
     next(error)
   }
 }
+
 
 /* ***************************
  * Intentional error trigger

@@ -1,2 +1,5 @@
 github: https://github.com/maugos1813/cse340.git
 deployed: https://cse340-r2ke.onrender.com
+
+account: fab@gmail.com
+password: Fabian123456!

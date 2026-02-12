@@ -5,21 +5,110 @@
 
   <%- vehicleHTML %>
 
+  <!-- FAVORITES SECTION -->
   <% if (loggedin) { %>
     <% if (isFavorite) { %>
       <form action="/favorites/remove" method="POST" style="margin-top:1em;">
         <input type="hidden" name="inv_id" value="<%= inv_id %>">
-        <button type="submit" class="btn btn-danger">Remove from Favorites</button>
+        <button type="submit" class="btn btn-danger">
+          Remove from Favorites
+        </button>
       </form>
     <% } else { %>
       <form action="/favorites/add" method="POST" style="margin-top:1em;">
         <input type="hidden" name="inv_id" value="<%= inv_id %>">
-        <button type="submit" class="btn btn-primary">Add to Favorites</button>
+        <button type="submit" class="btn btn-primary">
+          Add to Favorites
+        </button>
       </form>
     <% } %>
   <% } else { %>
-    <p><a href="/account/login">Log in</a> to add this vehicle to your favorites.</p>
+    <p>
+      <a href="/account/login">Log in</a> to add this vehicle to your favorites.
+    </p>
   <% } %>
+
+  <!-- ========================= -->
+  <!-- REVIEW FORM SECTION -->
+  <!-- ========================= -->
+
+  <% if (loggedin) { %>
+    <section style="margin-top:2em;">
+      <h2>Leave a Review</h2>
+
+      <form action="/reviews/add" method="POST">
+        <input type="hidden" name="inv_id" value="<%= inv_id %>">
+
+        <div style="margin-bottom:1em;">
+          <label for="review_text">Your Review:</label><br>
+          <textarea 
+            name="review_text" 
+            id="review_text" 
+            rows="4" 
+            style="width:100%;" 
+            required
+          ></textarea>
+        </div>
+
+        <div style="margin-bottom:1em;">
+          <label for="review_rating">Rating:</label><br>
+          <select name="review_rating" id="review_rating" required>
+            <option value="">Select Rating</option>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Very Good</option>
+            <option value="3">3 - Good</option>
+            <option value="2">2 - Fair</option>
+            <option value="1">1 - Poor</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+          Submit Review
+        </button>
+      </form>
+    </section>
+  <% } else { %>
+    <section style="margin-top:2em;">
+      <p>
+        <a href="/account/login">Log in</a> to leave a review.
+      </p>
+    </section>
+  <% } %>
+
+  <!-- ========================= -->
+  <!-- REVIEWS DISPLAY SECTION -->
+  <!-- ========================= -->
+
+  <section style="margin-top:2em;">
+    <h2>Customer Reviews</h2>
+
+    <% if (reviews && reviews.length > 0) { %>
+
+      <% reviews.forEach(function(review) { %>
+        <div style="margin-bottom:1.5em; padding:1em; border:1px solid #ccc; border-radius:6px;">
+          
+          <p>
+            <strong>
+              <%= review.account_firstname %> 
+              <%= review.account_lastname %>
+            </strong>
+            — Rating: <%= review.review_rating %>/5
+          </p>
+
+          <p><%= review.review_text %></p>
+
+          <small>
+            <%= new Date(review.review_date).toLocaleDateString() %>
+          </small>
+
+        </div>
+      <% }) %>
+
+    <% } else { %>
+      <p>No reviews yet. Be the first to leave one!</p>
+    <% } %>
+  </section>
+
 </main>
 
 <!-- <%- include('../partials/footer') %> -->

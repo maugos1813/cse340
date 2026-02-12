@@ -16,6 +16,8 @@ const baseController = require("./controllers/baseController")
 
 const favoriteRoute = require("./routes/favoriteRoute")
 
+const reviewRoute = require("./routes/reviewRoute")
+
 const app = express()
 
 /* *****************************
@@ -90,7 +92,7 @@ app.use("/inv", inventoryRoute)
 
 app.use("/favorites", favoriteRoute)
 
-
+app.use("/reviews", reviewRoute)
 /* *****************************
  * 404 Handler
  * ***************************** */
